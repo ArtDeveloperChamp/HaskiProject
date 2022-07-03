@@ -1,0 +1,39 @@
+﻿@using HaskiBlazor.Data
+
+@Template(Item)
+<div>
+    @Item.Title
+    <img class="bench-status-img float-right" src="public\vector-shopping-bag-icon.png">
+    <span class="float-right">$@Item.EstimatedValue</span>
+</div>
+<div class="btn-panel">
+    <button class="btn">Buy now</button>
+    <button class="btn float-right" @onclick="e => ExpandHandle(e)">
+        <img src="public/expand.png" class="@RotativeClass">
+    </button>
+</div>
+<div class="@ExpandedClass">
+    @Item.Description
+</div>
+
+@code {
+
+    [Parameter]
+    public BenchItem Item { get; set; }
+
+    [Parameter]
+    public RenderFragment<BenchItem> Template { get; set; }
+
+    private bool Expanded { get; set; }
+
+    private string ExpandedClass { get; set; } = String.Empty;
+
+    private string RotativeClass { get; set; } = String.Empty; 
+
+    private void ExpandHandle(MouseEventArgs e)
+    {
+         this.Expanded = !this.Expanded;
+         ExpandedClass = Expanded ? "collapsive" : "expandive";
+         RotativeClass = Expanded ? "rotativex" : "rotativebackx";
+    }
+}

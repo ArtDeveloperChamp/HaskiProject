@@ -1,0 +1,71 @@
+﻿@page "/counter"
+
+@using HaskiBlazor.Data
+@inject ExerciseTableService ExerciseService
+
+<PageTitle>Counter</PageTitle>
+
+<h1>Counter</h1>
+
+<p role="status">Current count: @currentCount</p>
+
+<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+
+@if (exercises == null)
+{
+    <p>
+        <em>Ничего не найдено...</em>
+    </p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Номер</th>
+            <th>Название</th>
+            <th>Условие</th>
+            <th>Требования</th>
+            <th>Примеры</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var ex in exercises)
+        {
+            <tr>
+                <td><b></b>@ex.Id</td>
+                <td>@ex.Name</td>
+                <td>@ex.Note</td>
+                <td>@ex.Demand</td>
+                <td>
+                    @foreach (var e in ex.ForExample!)
+                    {
+                         <div>@e</div>   
+                    }
+                    </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+
+@code {
+    private int currentCount;
+
+    private void IncrementCount()
+    {
+        currentCount++;
+    }
+
+    private ExerciseTable[]? exercises;
+
+    [Parameter]
+    public int Id {get; set;} = 1;
+
+    protected override async Task OnInitializedAsync()
+    {
+        exercises = await ExerciseService.GetExercises(Id);
+        
+    }
+}

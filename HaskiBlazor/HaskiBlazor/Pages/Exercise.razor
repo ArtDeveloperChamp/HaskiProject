@@ -1,0 +1,57 @@
+﻿@page "/fetchdata2"
+@using HaskiBlazor.Data
+@inject ExerciseTableService ExerciseService
+
+<p>C++</p>
+
+@if (exercises == null)
+{
+    <p>
+        <em>Ничего не найдено...</em>
+    </p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Номер</th>
+            <th>Название</th>
+            <th>Условие</th>
+            <th>Требования</th>
+            <th>Примеры</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var ex in exercises)
+        {
+            <tr>
+                <td><b></b>@ex.Id</td>
+                <td>@ex.Name</td>
+                <td>@ex.Note</td>
+                <td>@ex.Demand</td>
+                <td>
+                    @foreach (var e in ex.ForExample!)
+                    {
+                         <div>@e</div>   
+                    }
+                    </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+@code {
+    private ExerciseTable[]? exercises;
+    
+    [Parameter]
+    public int Id {get; set;} = 1;
+
+    protected override async Task OnInitializedAsync()
+    {
+        exercises = await ExerciseService.GetExercises(Id);
+        
+    }
+
+}

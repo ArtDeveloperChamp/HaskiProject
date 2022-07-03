@@ -1,0 +1,39 @@
+﻿body {
+}
+
+.wrapper {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 10px;
+    grid-auto-rows: minmax(100px, auto);
+}
+
+.one_one{
+    grid-column: 1;
+    grid-row: 1;
+}
+
+.two_one{
+    grid-column: 2 / 4;
+    grid-row: 1;
+}
+
+.three_one{
+    grid-column: 4;
+    grid-row: 1;
+}
+
+.one_two{
+    grid-column: 1;
+    grid-row: 2;
+}
+
+.two_two{
+    grid-column: 2 / 4;
+    grid-row: 2;
+}
+
+.three_two{
+    grid-column: 4 / 11;
+    grid-row: 2;
+}

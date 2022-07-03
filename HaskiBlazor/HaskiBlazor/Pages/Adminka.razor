@@ -1,0 +1,88 @@
+﻿@page "/adminka"
+
+@using System.Text.Json
+@using HaskiBlazor.Data
+<h3 class="fullwidth">Adminka</h3>
+
+<table>
+  <th>
+    <tr>Title</tr>
+    <tr><input @bind="@Title" /></tr>
+  </th>
+  <th>
+     <tr>Description</tr>
+     <tr><textarea @bind="Description" @bind:event="oninput" class="block" /></tr>
+  </th>
+  <th>
+    <tr><InputFile OnChange="@LoadFiles"></InputFile></tr>
+    <tr><img src="@ImgPath"></tr>
+  </th>
+</table>
+
+<main>
+    <article class="wrapper">
+        <label class="one_one">Title</label>
+        <input class="one_two" @bind="@Title"/>
+        <label class="two_one">Description</label>
+        <textarea @bind="Description" @bind:event="oninput" class="block two_two" />
+        <InputFile OnChange="@LoadFiles" class="three_one"></InputFile>
+        <img src="@ImgPath" class="three_two">
+    </article>
+</main>
+
+<div>
+    <input onclick="@SaveData">Save
+</div>
+
+<p3>@Status</p3>
+@code {
+    private string Title { get; set; } = String.Empty;
+    private string Description { get; set; } = String.Empty;
+    private string ImgPath { get; set; } = String.Empty;
+    private IBrowserFile browserFile { get; set; }
+    private string path = "public/";
+    private string Status { get; set; }
+    private string errorPath = "File must be .png or .jpeg type";
+
+    private async void LoadFiles(InputFileChangeEventArgs e)
+    {
+        if (e.File.ContentType == "jpeg" || e.File.ContentType == "png")
+        {
+            await using FileStream fs = new(path + e.File.Name, FileMode.Create);
+            await browserFile.OpenReadStream().CopyToAsync(fs);
+            ImgPath = path + e.File.Name;
+        }
+        else ImgPath = errorPath;
+    }
+
+    private async void SaveData(MouseEventArgs e)
+    {
+        if (Title == null || Title == String.Empty)
+            Status = "You have to fill 'Title' field!";
+        if (Description == null || Description == String.Empty)
+            Status = "You have to fill 'Description' field!";
+        if (ImgPath == null || ImgPath == String.Empty || ImgPath == errorPath)
+            Status = "Please, choose correct image file!";
+        string title = Title.Split(' ')[0];
+        string fileName = $"data/{title}.json";
+        int n = 1;
+        var files = Directory.GetFiles("data");
+        if (files != null)
+            if (files.Contains(fileName))
+            {
+                bool checkedName = true;
+                while (checkedName)
+                    if (files.Contains(fileName + n))
+                        n++;
+                    else
+                    {
+                        checkedName = false;
+                        fileName += n;
+                    }
+            }
+        var item = new GalleryItem { Title = this.Title, Description = this.Description, ImgPath = this.ImgPath };
+        string jsonString = JsonSerializer.Serialize(item);
+        File.WriteAllText(fileName, jsonString);
+        Status = "Succesfully saved!";
+    }
+}
